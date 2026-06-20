@@ -607,6 +607,14 @@
       revealEl.classList.add('on');
       revealEl.style.pointerEvents='all';
     },600);
+
+    // Ocultar completamente los elementos del juego tras la transición
+    setTimeout(()=>{
+      gameScr.style.display='none';
+      hintEl.style.display='none';
+      cv.style.display='none';
+      ctx.clearRect(0,0,W,H);
+    },1600);
   }
 
   // ════════════════════════════════════════
