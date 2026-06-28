@@ -20,15 +20,10 @@
       text-rendering:optimizeLegibility
     }
 
-    /* ── STAR CANVAS (always behind everything) ── */
-    #star-canvas {
-      position:fixed; inset:0; z-index:0; display:block
-    }
-
-    /* ── PARTICLE CANVAS ── */
-    #magic-canvas {
-      position:fixed; inset:0; z-index:20; pointer-events:none; display:block
-    }
+    /* ── CANVASES ── */
+    #star-canvas  { position:fixed; inset:0; z-index:0;  display:block }
+    #magic-canvas { position:fixed; inset:0; z-index:20; pointer-events:none; display:block }
+    #petal-canvas { position:fixed; inset:0; z-index:11; cursor:pointer }
 
     /* ════════════════════════
        GAME SCREEN
@@ -38,13 +33,8 @@
       pointer-events:none;
       display:flex; flex-direction:column;
       align-items:center; justify-content:flex-start;
-      padding-top: max(5vh, 34px);
+      padding-top: max(5vh, 36px);
       transition: opacity 1.2s, transform 1.2s
-    }
-
-    /* constellation canvas sits inside game screen */
-    #con-canvas {
-      position:fixed; inset:0; z-index:11; cursor:crosshair
     }
 
     .game-title {
@@ -53,38 +43,38 @@
       font-size:clamp(2rem, 5vw, 3rem);
       letter-spacing:.04em;
       color:#ede0ff;
-      text-shadow:0 0 28px rgba(170,110,255,.75), 0 0 60px rgba(160,100,255,.35), 0 2px 8px rgba(0,0,0,.6);
+      text-shadow:0 0 28px rgba(200,130,255,.7), 0 0 60px rgba(160,100,255,.35), 0 2px 8px rgba(0,0,0,.6);
       margin-bottom:.45rem;
-      animation:titlePulse 3s ease-in-out infinite;
-      position:relative; z-index:12; pointer-events:none
+      animation:titlePulse 4s ease-in-out infinite;
     }
     @keyframes titlePulse {
-      0%,100%{ text-shadow:0 0 30px rgba(160,100,255,.7),0 0 60px rgba(160,100,255,.3) }
-      50%    { text-shadow:0 0 42px rgba(200,140,255,.9),0 0 80px rgba(200,140,255,.4) }
+      0%,100%{ text-shadow:0 0 28px rgba(200,130,255,.65), 0 0 55px rgba(160,100,255,.3) }
+      50%    { text-shadow:0 0 40px rgba(220,150,255,.9),  0 0 80px rgba(200,130,255,.4) }
     }
 
     .game-sub {
       font-size:.82rem; letter-spacing:.18em;
-      text-transform:uppercase; color:#c0aee8; opacity:.95;
+      text-transform:uppercase; color:#c0aee8; opacity:.9;
       font-weight:400;
       text-shadow:0 1px 6px rgba(0,0,0,.5);
-      position:relative; z-index:12; pointer-events:none
     }
 
+    /* Progress petals */
     #progress-bar {
-      display:flex; gap:10px; margin-top:1.3rem;
-      position:relative; z-index:12; pointer-events:none
+      display:flex; gap:12px; margin-top:1.4rem;
     }
-    .prog-dot {
-      width:12px; height:12px; border-radius:50%;
-      background:rgba(160,120,255,.22);
-      border:1.5px solid rgba(160,120,255,.45);
-      transition:all .4s
+    .prog-petal {
+      width:14px; height:18px;
+      opacity:.28;
+      filter:drop-shadow(0 0 0px transparent);
+      transition:all .5s;
+      background:radial-gradient(ellipse at 50% 30%, #e8c0ff 0%, #b080e0 60%, rgba(140,60,200,0) 100%);
+      clip-path:polygon(50% 0%, 85% 25%, 100% 60%, 85% 90%, 50% 100%, 15% 90%, 0% 60%, 15% 25%);
+      border-radius:40% 40% 50% 50%;
     }
-    .prog-dot.lit {
-      background:rgba(200,160,255,.9);
-      border-color:rgba(220,190,255,1);
-      box-shadow:0 0 12px rgba(200,150,255,.8),0 0 24px rgba(200,150,255,.4)
+    .prog-petal.lit {
+      opacity:1;
+      filter:drop-shadow(0 0 8px rgba(210,150,255,.9)) drop-shadow(0 0 18px rgba(180,100,255,.5));
     }
 
     #hint {
@@ -96,83 +86,19 @@
       font-weight:400;
       text-shadow:0 1px 8px rgba(0,0,0,.6);
       white-space:nowrap;
-      animation:blink 2.5s ease-in-out infinite;
+      animation:blink 2.8s ease-in-out infinite;
       transition:opacity .6s
     }
-    @keyframes blink{ 0%,100%{opacity:.6} 50%{opacity:.2} }
-
-    /* ── FLOATING QUOTE ── */
-    #star-quote {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 8;
-      pointer-events: none;
-      text-align: center;
-      width: min(85vw, 520px);
-      opacity: 0;
-      animation: quoteAppear 2s ease forwards 1.2s;
-    }
-
-    @keyframes quoteAppear {
-      0%   { opacity:0; transform: translate(-50%,-50%) scale(.94) }
-      100% { opacity:1; transform: translate(-50%,-50%) scale(1) }
-    }
-
-    .quote-line {
-      display: block;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: clamp(1.1rem, 2.8vw, 1.55rem);
-      color: rgba(220, 200, 255, 0);
-      line-height: 1.8;
-      text-shadow: 0 0 30px rgba(180,130,255,0);
-      animation: quoteGlow 5s ease forwards 2s;
-    }
-
-    @keyframes quoteGlow {
-      0%   { color: rgba(220,200,255,0);   text-shadow: 0 2px 10px rgba(0,0,0,0),   0 0 30px rgba(180,130,255,0) }
-      30%  { color: rgba(230,210,255,.65); text-shadow: 0 2px 14px rgba(0,0,0,.8),  0 0 40px rgba(180,130,255,.35) }
-      60%  { color: rgba(245,232,255,.9);  text-shadow: 0 2px 16px rgba(0,0,0,.9),  0 0 55px rgba(210,160,255,.55), 0 0 100px rgba(160,100,255,.2) }
-      100% { color: rgba(240,225,255,.78); text-shadow: 0 2px 14px rgba(0,0,0,.85), 0 0 40px rgba(200,150,255,.45) }
-    }
-
-    .quote-stars {
-      display: block;
-      font-size: .85rem;
-      letter-spacing: .5em;
-      color: rgba(200,170,255,.5);
-      margin-top: .6rem;
-      animation: quoteGlow 5s ease forwards 2.8s;
-    }
-
-    .r-quote {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: clamp(1.1rem, 2.6vw, 1.5rem);
-      color: #f5eeff;
-      line-height: 1.9;
-      background: rgba(4, 2, 18, 0.72);
-      border: 1px solid rgba(180,130,255,.25);
-      border-radius: 14px;
-      padding: 1.4rem 2rem;
-      max-width: min(88vw, 540px);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      opacity: 0;
-      margin-bottom: 1.6rem;
-      transition: opacity 1.2s ease 0.3s;
-    }
-    #reveal.on .r-quote { opacity: 1 }
+    @keyframes blink { 0%,100%{opacity:.7} 50%{opacity:.2} }
 
     /* ════════════════════════
        FLASH
     ════════════════════════ */
     #bloom {
       position:fixed; inset:0; z-index:50;
-      background:#fff; opacity:0; pointer-events:none;
-      transition:opacity .5s
+      background:radial-gradient(ellipse at center, #fff8ff 0%, #e8d0ff 40%, #fff 100%);
+      opacity:0; pointer-events:none;
+      transition:opacity .6s
     }
 
     /* ════════════════════════
@@ -181,14 +107,42 @@
     #reveal {
       position:fixed; inset:0; z-index:30;
       display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
+      align-items:center; justify-content:flex-end;
       padding:2rem;
+      padding-bottom: max(3rem, env(safe-area-inset-bottom, 3rem));
       text-align:center;
       opacity:0; pointer-events:none;
-      transition:opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-      background: linear-gradient(to bottom, rgba(6, 4, 16, 0.35) 0%, rgba(6, 4, 16, 0.45) 50%, rgba(6, 4, 16, 0.8) 100%), url('yasmin_stars.png') center/cover no-repeat;
+      transition:opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+      background:
+        linear-gradient(to bottom,
+          rgba(4,2,15,.95) 0%,
+          rgba(4,2,15,.5)  14%,
+          rgba(6,4,16,.22) 30%,
+          rgba(6,4,16,.22) 60%,
+          rgba(4,2,15,.75) 100%
+        ),
+        url("ChatGPT Image 28 jun 2026, 21_19_50.png") center/cover no-repeat;
     }
     #reveal.on { opacity:1 }
+
+    .r-phrase {
+      font-family:'Cormorant Garamond', serif;
+      font-style:italic;
+      font-size:clamp(1.05rem, 2.6vw, 1.45rem);
+      color:#f2eaff;
+      line-height:1.9;
+      background:rgba(4, 2, 18, 0.68);
+      border:1px solid rgba(190,140,255,.22);
+      border-radius:16px;
+      padding:1.4rem 2rem;
+      max-width:min(88vw, 520px);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      opacity:0;
+      margin-bottom:1.6rem;
+      transition:opacity 1.4s ease .5s;
+    }
+    #reveal.on .r-phrase { opacity:1 }
 
     .r-divider {
       display:block;
@@ -197,47 +151,43 @@
       color:rgba(220,195,255,.9);
       opacity:0;
       text-shadow:0 0 14px rgba(180,130,255,.6), 0 1px 8px rgba(0,0,0,.6);
-      transition:opacity 1.0s ease 0.2s
+      transition:opacity 1s ease .3s;
+      margin-bottom:.1rem;
     }
     #reveal.on .r-divider { opacity:1 }
 
     .r-name {
       display:block;
-      margin-top:0.9rem;
+      margin-top:.7rem;
       font-family:'Dancing Script', cursive;
       font-size:clamp(2.8rem, 9vw, 5.5rem);
       font-weight:700;
-      color:rgba(248,232,255,1);
+      color:rgba(250,235,255,1);
       opacity:0;
-      text-shadow:0 2px 20px rgba(0,0,0,.85), 0 0 35px rgba(210,140,255,.7), 0 0 70px rgba(190,110,255,.3);
-      transition:opacity 1.2s ease 0.5s
+      text-shadow:0 2px 20px rgba(0,0,0,.9), 0 0 36px rgba(210,140,255,.7), 0 0 70px rgba(190,110,255,.3);
+      transition:opacity 1.4s ease .6s;
     }
     #reveal.on .r-name { opacity:1 }
 
     /* ── MOBILE ── */
     @media(max-width:768px){
-      #game-screen { padding-top:max(3.5vh, 24px) }
-      .game-title  { font-size:clamp(1.55rem, 6vw, 2.1rem); letter-spacing:.02em }
-      .game-sub    { font-size:.72rem; letter-spacing:.1em }
-      #progress-bar{ margin-top:1rem; gap:8px }
-      .prog-dot    { width:10px; height:10px }
-      #hint        { font-size:.7rem; letter-spacing:.1em }
+      #game-screen  { padding-top:max(3.5vh, 24px) }
+      .game-title   { font-size:clamp(1.6rem, 6vw, 2.2rem); letter-spacing:.02em }
+      .game-sub     { font-size:.72rem; letter-spacing:.1em }
+      #progress-bar { margin-top:1rem; gap:9px }
+      .prog-petal   { width:12px; height:15px }
+      #hint         { font-size:.7rem; letter-spacing:.1em }
 
-      #reveal {
-        padding:1.5rem;
-        background: linear-gradient(to bottom, rgb(4,2,15) 0%, rgb(4,2,15) 13%, rgba(4,2,15,.75) 22%, rgba(6,4,16,.4) 32%, rgba(6,4,16,.44) 58%, rgba(6,4,16,.85) 100%), url('yasmin_stars.png') center top/cover no-repeat;
-        justify-content: flex-end;
-        padding-bottom: max(3.5rem, env(safe-area-inset-bottom, 3.5rem));
-      }
-      .r-quote    { font-size:clamp(1rem, 4vw, 1.2rem); padding:1.1rem 1.4rem; margin-bottom:1.2rem; }
+      .r-phrase   { font-size:clamp(1rem, 4vw, 1.2rem); padding:1.1rem 1.4rem; margin-bottom:1.2rem }
       .r-divider  { font-size:.82rem; letter-spacing:.4em }
-      .r-name     { font-size:clamp(2.4rem, 11vw, 3.4rem); margin-top:0.7rem }
+      .r-name     { font-size:clamp(2.4rem, 11vw, 3.4rem); margin-top:.6rem }
+      #reveal     { padding:1.5rem; padding-bottom:max(2.5rem, env(safe-area-inset-bottom, 2.5rem)) }
     }
     @media(max-width:420px){
       .game-title { font-size:clamp(1.3rem, 7vw, 1.65rem) }
-      .game-sub   { font-size:.65rem; letter-spacing:.08em }
-      .r-name     { font-size:2.4rem; }
-      .r-quote    { font-size:.95rem; padding:.9rem 1.2rem; }
+      .game-sub   { font-size:.65rem }
+      .r-phrase   { font-size:.95rem; padding:.9rem 1.2rem }
+      .r-name     { font-size:2.4rem }
     }
   </style>
 </head>
@@ -248,99 +198,70 @@
     <source src="audio/cancion.wav" type="audio/wav">
   </audio>
 
-  <!-- Background star canvas -->
   <canvas id="star-canvas"></canvas>
-
-  <!-- Particle canvas -->
   <canvas id="magic-canvas"></canvas>
+  <canvas id="petal-canvas"></canvas>
 
-  <!-- Flash -->
   <div id="bloom"></div>
 
-  <!-- ── GAME ── -->
-  <canvas id="con-canvas"></canvas>
-
   <div id="game-screen">
-    <div class="game-title">Forma la Constelación</div>
-    <div class="game-sub">Toca las estrellas en orden</div>
+    <div class="game-title">Recoge los pétalos</div>
+    <div class="game-sub">un secreto te aguarda</div>
     <div id="progress-bar"></div>
   </div>
 
-  <div id="hint">✦ Toca la estrella que brilla ✦</div>
+  <div id="hint">✦ Toca cada pétalo ✦</div>
 
   <!-- ── REVEAL ── -->
   <div id="reveal">
-    <p class="r-quote">
-      &ldquo;Te pongo estas estrellas,<br>
-      para que veas el brillo<br>
-      que siente la gente al verte frente a ellos&rdquo;
+    <p class="r-phrase">
+      &ldquo;Como el jazmín, no necesitas<br>
+      llamar la atención.<br>
+      Tu presencia lo hace sola.&rdquo;
     </p>
     <span class="r-divider">✦ &nbsp; ✦ &nbsp; ✦</span>
     <span class="r-name">Yasmin</span>
   </div>
 
   <script>
-  // Global error logger for diagnostics
-  window.onerror = function(msg, url, line, col, error) {
-    var div = document.createElement('div');
-    div.style.position = 'fixed';
-    div.style.top = '0';
-    div.style.left = '0';
-    div.style.width = '100%';
-    div.style.backgroundColor = 'rgba(255, 0, 0, 0.9)';
-    div.style.color = '#fff';
-    div.style.padding = '15px';
-    div.style.zIndex = '99999';
-    div.style.fontFamily = 'monospace';
-    div.style.fontSize = '12px';
-    div.style.whiteSpace = 'pre-wrap';
-    div.innerHTML = '<strong>JS Error:</strong> ' + msg + '<br>Line: ' + line + ', Col: ' + col + '<br>Stack: ' + (error && error.stack || 'N/A');
-    document.body.appendChild(div);
-    return false;
-  };
-
   // ════════════════════════════════════════
   //  UTILS
   // ════════════════════════════════════════
   const isMobile = window.matchMedia('(max-width:768px)').matches;
+  let W, H;
 
   // ════════════════════════════════════════
-  //  STARFIELD (background canvas)
+  //  STARFIELD
   // ════════════════════════════════════════
   const sc  = document.getElementById('star-canvas');
   const sct = sc.getContext('2d');
-  let W, H;
 
-  // Deterministic star seed
   const STARS = (() => {
     let s = 42;
     const rnd = () => { s = (s*1664525+1013904223)&0xffffffff; return (s>>>0)/0xffffffff; };
     return Array.from({length:220}, () => ({
-      px: rnd(), py: rnd(),
-      r:  rnd()*1.4+0.3,
-      a:  rnd()*0.55+0.3,
-      ts: rnd()*0.012+0.004,
-      to: rnd()*Math.PI*2,
-      col: rnd()>.85?'#d0c0ff':(rnd()>.7?'#ffe8f0':'#ffffff')
+      px:rnd(), py:rnd(),
+      r: rnd()*1.4+0.3,
+      a: rnd()*0.55+0.3,
+      ts:rnd()*0.012+0.004,
+      to:rnd()*Math.PI*2,
+      col:rnd()>.85?'#d0c0ff':(rnd()>.7?'#ffe8f0':'#ffffff')
     }));
   })();
 
   const shooters = [];
-
   function spawnShooter() {
     if (Math.random() > 0.007) return;
     const angle = Math.PI/6 + Math.random()*Math.PI/6;
     shooters.push({
-      x: Math.random()*W, y: Math.random()*H*.35,
-      len: 80+Math.random()*120,
-      speed: 8+Math.random()*10,
-      vx: Math.cos(angle), vy: Math.sin(angle),
-      life: 1, decay: .018+Math.random()*.012
+      x:Math.random()*W, y:Math.random()*H*.35,
+      len:80+Math.random()*120, speed:8+Math.random()*10,
+      vx:Math.cos(angle), vy:Math.sin(angle),
+      life:1, decay:.018+Math.random()*.012
     });
   }
 
   function drawSky(now) {
-    // Sky gradient
     const bg = sct.createRadialGradient(W*.35, H*.25, 0, W*.5, H*.5, Math.max(W,H)*.85);
     bg.addColorStop(0,   '#0e0828');
     bg.addColorStop(0.5, '#06041a');
@@ -348,10 +269,9 @@
     sct.fillStyle = bg;
     sct.fillRect(0,0,W,H);
 
-    // Nebula wisps
     [{x:.22,y:.28,rx:.55,ry:.32,c:'rgba(90,50,180,.15)'},
      {x:.72,y:.68,rx:.48,ry:.35,c:'rgba(160,50,110,.12)'},
-     {x:.50,y:.12,rx:.4, ry:.28,c:'rgba(50,70,200,.1)' }
+     {x:.50,y:.12,rx:.4, ry:.28,c:'rgba(50,70,200,.10)'}
     ].forEach(n=>{
       const g = sct.createRadialGradient(n.x*W,n.y*H,0,n.x*W,n.y*H,Math.max(W,H)*Math.max(n.rx,n.ry));
       g.addColorStop(0, n.c); g.addColorStop(1,'rgba(0,0,0,0)');
@@ -359,7 +279,6 @@
       sct.beginPath(); sct.ellipse(n.x*W,n.y*H,n.rx*W,n.ry*H,0,0,Math.PI*2); sct.fill();
     });
 
-    // Twinkle stars
     STARS.forEach(s=>{
       const alpha = s.a*(.65+.35*Math.sin(now*s.ts*60+s.to));
       sct.globalAlpha = Math.max(0,alpha);
@@ -370,19 +289,17 @@
       sct.globalAlpha = 1; sct.shadowBlur = 0;
     });
 
-    // Shooting stars
     spawnShooter();
-    for (let i=shooters.length-1;i>=0;i--) {
-      const sh=shooters[i];
-      const tail=sct.createLinearGradient(sh.x,sh.y,sh.x-sh.vx*sh.len,sh.y-sh.vy*sh.len);
-      tail.addColorStop(0,`rgba(220,210,255,${sh.life*.85})`);
+    for (let i=shooters.length-1; i>=0; i--) {
+      const sh = shooters[i];
+      const tail = sct.createLinearGradient(sh.x,sh.y,sh.x-sh.vx*sh.len,sh.y-sh.vy*sh.len);
+      tail.addColorStop(0, `rgba(220,210,255,${sh.life*.85})`);
       tail.addColorStop(.4,`rgba(180,160,255,${sh.life*.35})`);
-      tail.addColorStop(1,'rgba(0,0,0,0)');
+      tail.addColorStop(1, 'rgba(0,0,0,0)');
       sct.beginPath(); sct.moveTo(sh.x,sh.y);
       sct.lineTo(sh.x-sh.vx*sh.len, sh.y-sh.vy*sh.len);
       sct.strokeStyle=tail; sct.lineWidth=1.5; sct.stroke();
-      sh.x+=sh.vx*sh.speed; sh.y+=sh.vy*sh.speed;
-      sh.life-=sh.decay;
+      sh.x+=sh.vx*sh.speed; sh.y+=sh.vy*sh.speed; sh.life-=sh.decay;
       if(sh.life<=0||sh.x>W+50||sh.y>H+50) shooters.splice(i,1);
     }
   }
@@ -392,7 +309,7 @@
   // ════════════════════════════════════════
   const mc  = document.getElementById('magic-canvas');
   const mcx = mc.getContext('2d');
-  const pCl = ['#c090ff','#e0c0ff','#ffffff','#9060d8','#f0d8ff','#d0a0ff'];
+  const pCl = ['#c090ff','#e0c0ff','#ffffff','#f0c0e8','#f8d0ff','#d0a0ff'];
   let pts = [];
 
   function hx(h){
@@ -402,240 +319,224 @@
 
   class Pt {
     constructor(x,y,big){
-      this.x=x;this.y=y;
+      this.x=x; this.y=y;
       this.r=big?Math.random()*5+2:Math.random()*2+.5;
       this.c=pCl[Math.floor(Math.random()*pCl.length)];
-      const a=Math.random()*Math.PI*2,sp=big?Math.random()*14+4:Math.random()*.6+.1;
-      this.vx=Math.cos(a)*sp;this.vy=Math.sin(a)*sp-(big?2:0);
-      this.life=1;this.decay=big?Math.random()*.012+.005:Math.random()*.004+.002;
+      const a=Math.random()*Math.PI*2, sp=big?Math.random()*14+4:Math.random()*.6+.1;
+      this.vx=Math.cos(a)*sp; this.vy=Math.sin(a)*sp-(big?2:0);
+      this.life=1; this.decay=big?Math.random()*.012+.005:Math.random()*.004+.002;
       this.g=big?.07:0;
     }
     update(){
-      this.x+=this.vx;this.y+=this.vy;this.vy+=this.g;
-      if(!this.g){this.vx+=(Math.random()-.5)*.08}else{this.vx*=.98;this.vy*=.98}
+      this.x+=this.vx; this.y+=this.vy; this.vy+=this.g;
+      if(!this.g){ this.vx+=(Math.random()-.5)*.08 }else{ this.vx*=.98; this.vy*=.98 }
       this.life-=this.decay;
     }
     draw(){
-      mcx.beginPath();mcx.arc(this.x,this.y,this.r,0,Math.PI*2);
-      mcx.shadowBlur=9;mcx.shadowColor=this.c;
+      mcx.beginPath(); mcx.arc(this.x,this.y,this.r,0,Math.PI*2);
+      mcx.shadowBlur=9; mcx.shadowColor=this.c;
       const[r,g,b]=hx(this.c);
       mcx.fillStyle=`rgba(${r},${g},${b},${Math.max(0,this.life)})`;
-      mcx.fill();mcx.shadowBlur=0;
+      mcx.fill(); mcx.shadowBlur=0;
     }
   }
-  function burst(x,y){for(let i=0;i<22;i++)pts.push(new Pt(x,y,false));}
-  function bigBoom(x,y){for(let i=0;i<350;i++)pts.push(new Pt(x,y,true));}
-  function amb(){if(pts.length<60&&Math.random()>.72)pts.push(new Pt(Math.random()*mc.width,mc.height+5));}
+  function burst(x,y){ for(let i=0;i<28;i++) pts.push(new Pt(x,y,false)) }
+  function bigBoom(x,y){ for(let i=0;i<380;i++) pts.push(new Pt(x,y,true)) }
+  function amb(){ if(pts.length<60&&Math.random()>.72) pts.push(new Pt(Math.random()*mc.width,mc.height+5)) }
 
   // ════════════════════════════════════════
-  //  CONSTELLATION GAME
+  //  PETAL GAME
   // ════════════════════════════════════════
-  const cv  = document.getElementById('con-canvas');
+  const cv  = document.getElementById('petal-canvas');
   const ctx = cv.getContext('2d');
 
-  const STAR_DEF = [
-    {px:.50,py:.20}, // 0 top
-    {px:.63,py:.30}, // 1 right-upper
-    {px:.68,py:.44}, // 2 right-mid
-    {px:.58,py:.56}, // 3 right-base
-    {px:.50,py:.62}, // 4 center
-    {px:.42,py:.56}, // 5 left-base
-    {px:.32,py:.44}, // 6 left-mid
-    {px:.37,py:.30}, // 7 left-upper
+  // Predefined spread positions (relative to screen)
+  const PETAL_DEFS = [
+    {px:.18, py:.22},
+    {px:.54, py:.16},
+    {px:.82, py:.27},
+    {px:.30, py:.48},
+    {px:.68, py:.44},
+    {px:.15, py:.67},
+    {px:.58, py:.68},
   ];
-  const ORDER = [0,1,2,3,4,5,6,7,0];
+  const PETAL_COUNT = PETAL_DEFS.length;
 
-  let stars=[], nextIdx=0, gameWon=false, t=0;
+  // Petal hues (pink-purple range)
+  const HUES = [310, 290, 325, 305, 315, 295, 320];
 
-  function buildStars(){
-    const portrait = H > W;
-    const xScale = portrait ? .68 : 1;
-    const xOff   = portrait ? .16 : 0;
-    const yOff   = portrait ? -.04 : 0;
-    stars = STAR_DEF.map((d,i)=>({
-      x: (d.px*xScale+xOff)*W,
-      y: (d.py+yOff)*H,
-      connected:false, active:i===0
-    }));
-  }
+  let petals = [];
+  let collected = 0;
+  let gameWon = false;
+  let t = 0;
 
-  function resize(){
-    W = sc.width = cv.width = mc.width = innerWidth;
-    H = sc.height = cv.height = mc.height = innerHeight;
-    if(!gameWon) buildStars();
-  }
-  window.addEventListener('resize', resize);
-
-  // Progress dots
-  const pb = document.getElementById('progress-bar');
-  STAR_DEF.forEach((_,i)=>{
-    const d=document.createElement('div');
-    d.className='prog-dot'; d.id='pd-'+i; pb.appendChild(d);
-  });
-
-  function drawGame(){
-    if(gameWon) return;
-    t+=.03;
-    ctx.clearRect(0,0,W,H);
-
-    // Completed lines
-    ctx.save();
-    ctx.strokeStyle='rgba(190,150,255,.55)';
-    ctx.lineWidth=1.5; ctx.setLineDash([5,8]);
-    ctx.shadowColor='rgba(160,100,255,.6)'; ctx.shadowBlur=8;
-    for(let i=0;i<nextIdx;i++){
-      const a=stars[ORDER[i]],b=stars[ORDER[i+1]];
-      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  class Petal {
+    constructor(def, hue, idx) {
+      this.baseX  = def.px * W + (Math.random()-.5)*W*.06;
+      this.baseY  = def.py * H + (Math.random()-.5)*H*.04;
+      this.x      = this.baseX;
+      this.y      = this.baseY;
+      this.hue    = hue;
+      this.idx    = idx;
+      this.size   = (isMobile ? 26 : 20) + Math.random()*8;
+      this.rot    = Math.random()*Math.PI*2;
+      this.rotSpd = (Math.random()-.5)*.008;
+      this.phase  = Math.random()*Math.PI*2;
+      this.alpha  = 0;
+      this.done   = false;
     }
-    ctx.restore();
 
-    // Shimmering segment
-    if(nextIdx>0&&nextIdx<ORDER.length-1){
-      const a=stars[ORDER[nextIdx-1]],b=stars[ORDER[nextIdx]];
+    update(t) {
+      if(this.done) return;
+      if(this.alpha < 1) this.alpha = Math.min(1, this.alpha + .025);
+      this.x = this.baseX + Math.sin(t*.6 + this.phase)*12;
+      this.y = this.baseY + Math.sin(t*.4 + this.phase*1.4)*7;
+      this.rot += this.rotSpd;
+    }
+
+    draw() {
+      if(this.done || this.alpha <= 0) return;
+      const s = this.size;
       ctx.save();
-      ctx.strokeStyle=`rgba(220,180,255,${(.5+.5*Math.sin(t*2))*.4})`;
-      ctx.lineWidth=3;ctx.setLineDash([]);
-      ctx.shadowColor='rgba(200,150,255,.9)';ctx.shadowBlur=15;
-      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+      ctx.globalAlpha = this.alpha;
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+
+      // Outer glow
+      ctx.shadowBlur  = 22;
+      ctx.shadowColor = `hsla(${this.hue}, 80%, 80%, .7)`;
+
+      // Petal body — teardrop bezier
+      const grad = ctx.createRadialGradient(0, -s*.25, s*.05, 0, 0, s);
+      grad.addColorStop(0,   `hsla(${this.hue+18}, 85%, 96%, 1)`);
+      grad.addColorStop(.45, `hsla(${this.hue},    78%, 82%, .95)`);
+      grad.addColorStop(1,   `hsla(${this.hue-12}, 65%, 66%, .15)`);
+
+      ctx.beginPath();
+      ctx.moveTo(0, -s);
+      ctx.bezierCurveTo( s*.58, -s*.65,  s*.58,  s*.28, 0,  s*.48);
+      ctx.bezierCurveTo(-s*.58,  s*.28, -s*.58, -s*.65, 0, -s);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Center shimmer line
+      ctx.beginPath();
+      ctx.moveTo(0, -s*.75);
+      ctx.lineTo(0,  s*.3);
+      ctx.strokeStyle = `hsla(${this.hue+30}, 90%, 97%, .35)`;
+      ctx.lineWidth   = .8;
+      ctx.setLineDash([]);
+      ctx.stroke();
+
       ctx.restore();
     }
 
-    const bConn = isMobile?9:7, bNorm = isMobile?8:5, lbSz = isMobile?14:11;
-
-    stars.forEach((s,i)=>{
-      const glow=s.active?2+Math.sin(t*3)*1.5:0;
-      const baseR=s.connected?bConn:bNorm;
-
-      if(s.active){
-        const g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,44+glow*3);
-        g.addColorStop(0,'rgba(200,150,255,.28)');g.addColorStop(1,'rgba(200,150,255,0)');
-        ctx.beginPath();ctx.arc(s.x,s.y,44+glow*3,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
-      }
-
-      const g2=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,baseR+glow);
-      if(s.connected){
-        g2.addColorStop(0,'#fff');g2.addColorStop(.4,'#d0b0ff');g2.addColorStop(1,'rgba(160,100,255,0)');
-      }else if(s.active){
-        g2.addColorStop(0,'#fff');g2.addColorStop(.5,`rgba(220,180,255,${.8+.2*Math.sin(t*3)})`);g2.addColorStop(1,'rgba(180,120,255,0)');
-      }else{
-        g2.addColorStop(0,'rgba(200,170,255,.7)');g2.addColorStop(1,'rgba(160,120,255,0)');
-      }
-      ctx.beginPath();ctx.arc(s.x,s.y,baseR+glow,0,Math.PI*2);
-      ctx.fillStyle=g2;
-      ctx.shadowColor=s.connected?'rgba(200,160,255,.9)':(s.active?'rgba(220,180,255,1)':'transparent');
-      ctx.shadowBlur=s.active?22+glow*4:(s.connected?14:0);
-      ctx.fill();ctx.shadowBlur=0;
-
-      if(s.active){
-        const len=(isMobile?13:9)+glow*2;
-        ctx.save();
-        ctx.strokeStyle=`rgba(255,240,255,${.6+.3*Math.sin(t*4)})`;
-        ctx.lineWidth=1.2;ctx.setLineDash([]);
-        ctx.beginPath();
-        ctx.moveTo(s.x-len,s.y);ctx.lineTo(s.x+len,s.y);
-        ctx.moveTo(s.x,s.y-len);ctx.lineTo(s.x,s.y+len);
-        ctx.stroke();ctx.restore();
-      }
-
-      ctx.save();
-      ctx.font=`600 ${lbSz}px Jost,sans-serif`;
-      ctx.fillStyle=s.connected?'rgba(230,215,255,1)':(s.active?'rgba(255,255,255,1)':'rgba(200,180,255,.75)');
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(i+1,s.x,s.y);ctx.restore();
-    });
-
-    requestAnimationFrame(drawGame);
+    isHit(px, py) {
+      return !this.done && Math.hypot(px - this.x, py - this.y) < this.size * (isMobile ? 1.9 : 1.5);
+    }
   }
 
-  // Tap
-  function handleTap(ex,ey){
+  function buildPetals() {
+    petals = [];
+    collected = 0;
+    PETAL_DEFS.forEach((def, i) => petals.push(new Petal(def, HUES[i], i)));
+  }
+
+  // Progress bar
+  const pb = document.getElementById('progress-bar');
+  PETAL_DEFS.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className='prog-petal'; d.id='pp-'+i; pb.appendChild(d);
+  });
+
+  function drawPetals() {
     if(gameWon) return;
-    const s=stars[ORDER[nextIdx]];
-    const dist=Math.hypot(ex-s.x,ey-s.y);
-    if(dist>=(isMobile?56:34)){wobble(s);return;}
-    s.connected=true;s.active=false;
-    burst(s.x,s.y);
-    nextIdx++;
-    const pd=document.getElementById('pd-'+ORDER[nextIdx-1]);
-    if(pd)pd.classList.add('lit');
-    if(nextIdx>=ORDER.length-1){setTimeout(win,380);}
-    else{stars[ORDER[nextIdx]].active=true;}
+    t += .025;
+    ctx.clearRect(0,0,W,H);
+    petals.forEach(p => { p.update(t); p.draw(); });
+    requestAnimationFrame(drawPetals);
   }
 
-  function wobble(s){
-    const ox=s.x,oy=s.y;let n=0;
-    const iv=setInterval(()=>{
-      s.x=ox+(Math.random()-.5)*12;s.y=oy+(Math.random()-.5)*12;
-      if(++n>6){s.x=ox;s.y=oy;clearInterval(iv);}
-    },40);
+  // Touch / click
+  function handleTap(ex, ey) {
+    if(gameWon) return;
+    for(let i=0; i<petals.length; i++) {
+      const p = petals[i];
+      if(p.isHit(ex, ey)) {
+        p.done = true;
+        burst(p.x, p.y);
+        collected++;
+        const dot = document.getElementById('pp-'+i);
+        if(dot) dot.classList.add('lit');
+        if(collected >= PETAL_COUNT) setTimeout(win, 400);
+        return;
+      }
+    }
   }
 
-  cv.addEventListener('mousedown',e=>handleTap(e.clientX,e.clientY));
-  cv.addEventListener('touchstart',e=>{
-    e.preventDefault();handleTap(e.touches[0].clientX,e.touches[0].clientY);
-  },{passive:false});
+  cv.addEventListener('mousedown', e => handleTap(e.clientX, e.clientY));
+  cv.addEventListener('touchstart', e => {
+    e.preventDefault();
+    handleTap(e.touches[0].clientX, e.touches[0].clientY);
+  }, {passive:false});
+
+  // Resize
+  function resize() {
+    W = sc.width = cv.width = mc.width = innerWidth;
+    H = sc.height = cv.height = mc.height = innerHeight;
+    if(!gameWon) buildPetals();
+  }
+  window.addEventListener('resize', resize);
 
   // ════════════════════════════════════════
-  //  WIN SEQUENCE
+  //  WIN
   // ════════════════════════════════════════
-  const bgMusic   = document.getElementById('bg-music');
-  const gameScr   = document.getElementById('game-screen');
-  const hintEl    = document.getElementById('hint');
-  const starQuote = document.getElementById('star-quote');
-  const bloomEl   = document.getElementById('bloom');
-  const revealEl  = document.getElementById('reveal');
+  const bgMusic  = document.getElementById('bg-music');
+  const gameScr  = document.getElementById('game-screen');
+  const hintEl   = document.getElementById('hint');
+  const bloomEl  = document.getElementById('bloom');
+  const revealEl = document.getElementById('reveal');
 
-  function win(){
-    gameWon=true;
-    bigBoom(W/2,H/2);
+  function win() {
+    gameWon = true;
+    bigBoom(W/2, H/2);
     bgMusic.play().catch(()=>{});
 
-    // Hide game UI
-    gameScr.style.opacity='0';
-    gameScr.style.transform='scale(.92)';
-    gameScr.style.pointerEvents='none';
-    hintEl.style.opacity='0';
-    if(starQuote) {
-      starQuote.style.opacity='0';
-      starQuote.style.transition='opacity .6s';
-    }
+    gameScr.style.opacity = '0';
+    gameScr.style.transform = 'scale(.93)';
+    gameScr.style.pointerEvents = 'none';
+    hintEl.style.opacity = '0';
 
-    // Flash white then reveal text
-    bloomEl.style.opacity='1';
+    bloomEl.style.opacity = '1';
     setTimeout(()=>{
-      bloomEl.style.opacity='0';
+      bloomEl.style.opacity = '0';
       revealEl.classList.add('on');
-      revealEl.style.pointerEvents='all';
-    },600);
+      revealEl.style.pointerEvents = 'all';
+    }, 650);
 
-    // Ocultar completamente los elementos del juego tras la transición
     setTimeout(()=>{
-      gameScr.style.display='none';
-      hintEl.style.display='none';
-      cv.style.display='none';
+      gameScr.style.display = 'none';
+      hintEl.style.display  = 'none';
+      cv.style.display      = 'none';
       ctx.clearRect(0,0,W,H);
-    },1600);
+    }, 1600);
   }
 
   // ════════════════════════════════════════
   //  MAIN LOOP
   // ════════════════════════════════════════
-  let frame=0;
-  function mainLoop(){
-    const now=Date.now()*.001;
-    frame++;
-
+  function mainLoop() {
+    const now = Date.now()*.001;
     sct.clearRect(0,0,W,H);
     drawSky(now);
 
     mcx.clearRect(0,0,mc.width,mc.height);
     amb();
-    for(let i=pts.length-1;i>=0;i--){
+    for(let i=pts.length-1; i>=0; i--) {
       pts[i].update();
-      if(pts[i].life<=0)pts.splice(i,1);
+      if(pts[i].life<=0) pts.splice(i,1);
       else pts[i].draw();
     }
-
     requestAnimationFrame(mainLoop);
   }
 
@@ -644,7 +545,7 @@
   // ════════════════════════════════════════
   resize();
   mainLoop();
-  drawGame();
+  drawPetals();
   </script>
 </body>
 </html>
