@@ -171,23 +171,42 @@
 
     /* ── MOBILE ── */
     @media(max-width:768px){
-      #game-screen  { padding-top:max(3.5vh, 24px) }
-      .game-title   { font-size:clamp(1.6rem, 6vw, 2.2rem); letter-spacing:.02em }
-      .game-sub     { font-size:.72rem; letter-spacing:.1em }
-      #progress-bar { margin-top:1rem; gap:9px }
-      .prog-petal   { width:12px; height:15px }
-      #hint         { font-size:.7rem; letter-spacing:.1em }
+      #game-screen {
+        padding-top: max(3vh, 20px);
+        background: linear-gradient(to bottom, rgba(4,2,15,.72) 0%, rgba(4,2,15,.0) 100%);
+        padding-bottom: 0;
+        height: auto;
+        bottom: auto;
+      }
+      .game-title   { font-size:clamp(1.5rem, 5.5vw, 2rem); letter-spacing:.02em; margin-bottom:.3rem }
+      .game-sub     { font-size:.68rem; letter-spacing:.12em }
+      #progress-bar { margin-top:.75rem; gap:10px }
+      .prog-petal   { width:16px; height:20px }
+      #hint         { font-size:.68rem; letter-spacing:.1em; bottom:max(1.5rem, env(safe-area-inset-bottom, 1.5rem)) }
 
-      .r-phrase   { font-size:clamp(1rem, 4vw, 1.2rem); padding:1.1rem 1.4rem; margin-bottom:1.2rem }
-      .r-divider  { font-size:.82rem; letter-spacing:.4em }
-      .r-name     { font-size:clamp(2.4rem, 11vw, 3.4rem); margin-top:.6rem }
-      #reveal     { padding:1.5rem; padding-bottom:max(2.5rem, env(safe-area-inset-bottom, 2.5rem)) }
+      .r-phrase   { font-size:clamp(.95rem, 3.8vw, 1.15rem); padding:1rem 1.3rem; margin-bottom:1rem; line-height:1.8 }
+      .r-divider  { font-size:.8rem; letter-spacing:.38em }
+      .r-name     { font-size:clamp(2.2rem, 10vw, 3.2rem); margin-top:.5rem }
+      #reveal     {
+        padding:1.2rem;
+        padding-bottom:max(2.2rem, env(safe-area-inset-bottom, 2.2rem));
+        background:
+          linear-gradient(to bottom,
+            rgba(4,2,15,.97) 0%,
+            rgba(4,2,15,.55) 15%,
+            rgba(6,4,16,.18) 32%,
+            rgba(6,4,16,.18) 62%,
+            rgba(4,2,15,.82) 100%
+          ),
+          url("ChatGPT Image 28 jun 2026, 21_19_50.png") center top/cover no-repeat;
+      }
     }
     @media(max-width:420px){
-      .game-title { font-size:clamp(1.3rem, 7vw, 1.65rem) }
-      .game-sub   { font-size:.65rem }
-      .r-phrase   { font-size:.95rem; padding:.9rem 1.2rem }
-      .r-name     { font-size:2.4rem }
+      .game-title { font-size:clamp(1.25rem, 6.5vw, 1.6rem) }
+      .game-sub   { font-size:.62rem; letter-spacing:.08em }
+      .r-phrase   { font-size:.9rem; padding:.85rem 1.1rem }
+      .r-name     { font-size:2.2rem }
+      .prog-petal { width:14px; height:17px }
     }
   </style>
 </head>
@@ -350,8 +369,8 @@
   const cv  = document.getElementById('petal-canvas');
   const ctx = cv.getContext('2d');
 
-  // Predefined spread positions (relative to screen)
-  const PETAL_DEFS = [
+  // Posiciones desktop (pantalla ancha)
+  const PETAL_DEFS_DESK = [
     {px:.18, py:.22},
     {px:.54, py:.16},
     {px:.82, py:.27},
@@ -360,6 +379,17 @@
     {px:.15, py:.67},
     {px:.58, py:.68},
   ];
+  // Posiciones móvil: evitar la cabecera (top 28%) y la pista (bottom 12%)
+  const PETAL_DEFS_MOB = [
+    {px:.20, py:.33},
+    {px:.72, py:.30},
+    {px:.48, py:.44},
+    {px:.14, py:.57},
+    {px:.82, py:.54},
+    {px:.34, py:.71},
+    {px:.66, py:.73},
+  ];
+  const PETAL_DEFS  = isMobile ? PETAL_DEFS_MOB : PETAL_DEFS_DESK;
   const PETAL_COUNT = PETAL_DEFS.length;
 
   // Petal hues (pink-purple range)
@@ -378,7 +408,7 @@
       this.y      = this.baseY;
       this.hue    = hue;
       this.idx    = idx;
-      this.size   = (isMobile ? 26 : 20) + Math.random()*8;
+      this.size   = (isMobile ? 34 : 20) + Math.random()*10;
       this.rot    = Math.random()*Math.PI*2;
       this.rotSpd = (Math.random()-.5)*.008;
       this.phase  = Math.random()*Math.PI*2;
